@@ -8,6 +8,11 @@
 <body>
     <h1><%= planet.name %></h1>
     <p><%= planet.description %> </p>
+<!-- new delete button -->
+<form action="/planets/<%=planet._id%>?_method=DELETE" method="POST">
+    <button type="submit">Delete <%= planet.name %></button>
+</form>  
+    <a href="/planets/<%= planet.id %>/edit">Edit <%= planet.name %> </a>
     <a href="/planets">Planets Index</a>
 </body>
 </html>

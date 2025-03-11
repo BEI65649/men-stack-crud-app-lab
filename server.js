@@ -4,11 +4,15 @@ dotenv.config();
 
 const express = require('express');
 
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 const app = express();
 
 const Planet = require("./models/planet.js");
+
+const methodOverride = require("method-override");
+
+const morgan = require("morgan");
 
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on("connected", () => {
@@ -16,6 +20,9 @@ mongoose.connection.on("connected", () => {
 });
 
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
+app.use(morgan("dev"));
+
 
 //I.N.D.U.C.E.S
 //Home/Root
@@ -36,8 +43,19 @@ app.get("/planets/new", (req, res) => {
 
 
 //Delete
+app.delete('/planets/:planetId', async (req, res) => {
+    await Planet.findByIdAndDelete(req.params.planetId);
+  res.redirect("/planets");
+});
 
 //Update
+// server.js
+
+app.put("/planets/:planetId", async (req, res) => {
+    await Planet.findByIdAndUpdate(req.params.planetId, req.body);
+    res.redirect(`/planets/${req.params.planetId}`);
+  });
+  
 
 
 //Create
@@ -53,6 +71,12 @@ app.post("/planets", async (req, res) => {
   });
 
   //Edit
+  app.get("/planets/:planetId/edit", async (req, res) => {
+    const foundPlanet = await Planet.findById(req.params.planetId);
+    res.render('planets/edit.ejs', {
+        planet: foundPlanet
+    })
+  });
 
   //Show
   app.get("/planets/:planetId", async (req, res) => {
