@@ -14,6 +14,8 @@ const methodOverride = require("method-override");
 
 const morgan = require("morgan");
 
+const path = require('path');
+
 mongoose.connect(process.env.MONGODB_URI);
 mongoose.connection.on("connected", () => {
     console.log(`Connected to MongoDB ${mongoose.connection.name}.`);
@@ -22,7 +24,8 @@ mongoose.connection.on("connected", () => {
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
 app.use(morgan("dev"));
-
+app.use(express.static('stylesheets'));
+app.use(express.static(path.join(__dirname, 'stylesheets')));
 
 //I.N.D.U.C.E.S
 //Home/Root
